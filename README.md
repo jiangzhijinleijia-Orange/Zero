@@ -10,6 +10,7 @@
 |---|---|
 | [要件定義書(たたき台 v1.0)](docs/requirements.md) | 運営メンバーレビュー待ち |
 | [要件レビュー — 論点整理と推奨案](docs/requirements-review.md) | レビュー会議の素材 |
+| [技術設計書 — データモデル・RLS・認証](docs/technical-design.md) | ドラフト v0.1(v1.1 確定後に更新) |
 
 ## プロジェクト概要
 

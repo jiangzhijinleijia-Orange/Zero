@@ -1,0 +1,23 @@
+# Supabase CLI のローカル開発設定(supabase start / supabase test db 用)
+project_id = "zero"
+
+[db]
+port = 54322
+major_version = 17
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+
+# ローカル開発で Discord OAuth を試す場合は、Discord Developer Portal で
+# アプリを作成し、以下を環境変数で渡す(本番は Supabase ダッシュボードで設定)
+[auth.external.discord]
+enabled = true
+client_id = "env(SUPABASE_AUTH_DISCORD_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_DISCORD_SECRET)"

@@ -1,11 +1,26 @@
-# 技術設計書 — データモデル・RLS・認証(ドラフト v0.1)
+# 技術設計書 — データモデル・RLS・認証(v0.2)
 
 | 項目 | 内容 |
 |---|---|
 | 対象 | [要件定義書 v1.0](requirements.md) §7 の概念モデルの具体化 |
 | 前提 | [レビュー文書](requirements-review.md) の推奨案(2-1, A-2, A-3, A-4, B-1, B-4)を採用した形で記述。レビュー会議で別の決定が出た場合の影響は §9 参照 |
 | スタック | Supabase(PostgreSQL + Auth + RLS)/ Next.js / Vercel |
-| ステータス | ドラフト。要件定義書 v1.1 確定後にマイグレーションとして実装 |
+| ステータス | v0.2 — 実装済み。**SQL の正は `supabase/migrations/` にあり**、本書は設計意図の説明。実装時の変更点は §0 参照 |
+
+---
+
+## 0. 実装版での更新(v0.1 → v0.2)
+
+実装・検証(RLS テスト25シナリオ)の過程で、以下を v0.1 から変更した。本文中の SQL 断片より `supabase/migrations/0001_initial_schema.sql` が常に優先される。
+
+1. **`app.is_active()` を新設し、全ポリシーに組み込んだ**。v0.1 では `student_id = auth.uid()` 直書きのポリシーがあり、無効化したユーザーが自分のデータを見え続けるバグが検証で発覚(F-4-5 違反)。自分の `profiles` 行のみ無効化後も可視(無効化の案内表示用)
+2. **運営のステータス変更は RPC 経由に変更**。v0.1 の列レベル権限(`revoke update on profiles`)は運営による status 更新まで塞ぐため、`app.admin_set_user_status()`(security definer)を新設。RPC は PostgREST が public スキーマしか公開しないため public に薄いラッパーを置く
+3. **`exam_scores` にも列レベル更新権限を追加**(student_id / exam_id / registered_by は更新不可)
+4. **退会時の物理削除(レビュー B-2)を FK で実装**:本人データ(tasks / scores / mentorships / event_targets)は `on delete cascade`、作成者参照(assignments.created_by 等)は `on delete set null`(講師退会で課題・共有データが消えないように)
+5. **Discord 通知は Edge Function ではなく Server Action 内の fetch に簡素化**(§7 の構成より部品が1つ減る。失敗は握りつぶす方針は同じ)
+6. **KPI 用の last_login 列は持たない**。`auth.users.last_sign_in_at` で足りることを確認(§8)
+
+検証手段: `supabase/tests/rls.test.sql`(pgTAP)+ `scripts/verify-rls-local.sh`(素の PostgreSQL で25シナリオ。担当外講師の不可視・担当終了・招待引換・無効化・anon 遮断などを含む)
 
 ---
 
@@ -599,14 +614,14 @@ where a.due_date >= current_date - 7;
 
 ---
 
-## 10. 実装に向けた残タスク
+## 10. 残タスク
 
-1. 要件定義書 v1.1 の確定(レビュー会議)
-2. 科目マスタの初期リスト確定(§3.3 は例)
-3. Supabase プロジェクト作成、Discord OAuth アプリ登録
-4. 本書 §3〜§5 をマイグレーションファイル化 + RLS テスト(§4.4)の実装
-5. Next.js プロジェクトの雛形作成(画面実装は要件 §10 のロードマップに従う)
+1. ~~マイグレーションファイル化 + RLS テストの実装~~ → 完了(`supabase/migrations/` / `supabase/tests/` / `scripts/`)
+2. ~~Next.js アプリの実装~~ → 完了(`app/`。画面一覧は要件 §8 の10画面に対応)
+3. 要件定義書 v1.1 の確定(レビュー会議)。推奨案と異なる決定が出た場合は §9 の依存マップに従って調整
+4. 科目マスタの初期リスト確定(現在はマイグレーション末尾の14科目が仮)
+5. Supabase プロジェクト作成・Discord OAuth 登録・Vercel デプロイ(手順: [deployment.md](deployment.md))
 
 ---
 
-*本書はドラフト v0.1。要件定義書 v1.1 の確定内容を反映して更新する。*
+*本書は v0.2(実装反映済み)。要件定義書 v1.1 の確定内容を反映して更新する。*

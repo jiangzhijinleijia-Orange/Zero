@@ -22,6 +22,8 @@
 | [要件レビュー — 論点整理と推奨案](docs/requirements-review.md) | 未決事項への推奨案(実装はこの推奨を採用) |
 | [技術設計書 — データモデル・RLS・認証](docs/technical-design.md) | DB 設計の考え方 |
 | [デプロイ・運用ガイド](docs/deployment.md) | **セットアップ手順とゼロコスト保証** |
+| [使い方ガイド](docs/user-guide.md) | 生徒・講師・運営向け(Discord 配布用) |
+| [保護者向け同意文書(ひな形)](docs/consent-form.md) | NF-6 対応。β開始前に Google Forms 化 |
 
 ## プロジェクト概要
 

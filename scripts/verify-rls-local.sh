@@ -9,7 +9,9 @@
 #     scripts/rls_check.sql の25シナリオを実行する。
 #
 # 使い方:
-#   sudo -u postgres bash scripts/verify-rls-local.sh
+#   ローカル(peer 認証):  sudo -u postgres bash scripts/verify-rls-local.sh
+#   CI / TCP 接続:          PGHOST=... PGUSER=postgres PGPASSWORD=... bash scripts/verify-rls-local.sh
+#   (psql が接続できる環境変数さえあればどこでも動く。CI: .github/workflows/ci.yml)
 # =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")/.."

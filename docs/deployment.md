@@ -16,6 +16,7 @@
 | Supabase(DB・認証) | Free | **一時停止(課金されない)** | クレジットカード登録不要。Free のまま使う限り請求は発生し得ない |
 | Vercel(ホスティング) | Hobby | **制限(課金されない)** | 非営利コミュニティ利用は Hobby 規約の範囲内。カード登録不要 |
 | Discord Webhook(通知) | 無料 | レート制限のみ | 外部 SaaS 課金なし |
+| GitHub Actions(CI) | 無料枠 | **停止(課金されない)** | public リポジトリは無制限。private は月2,000分、超過時は支払い設定がない限り停止 |
 | メール送信 | 使わない | — | 招待は Discord DM で配布。認証も Discord OAuth 中心でメール依存を排除 |
 
 実装側でも以下を徹底している:
@@ -127,6 +128,7 @@ npm run dev
 | `npm run lint`(app/) | ESLint |
 | `supabase test db` | pgTAP による RLS テスト(`supabase/tests/rls.test.sql`。要 Supabase CLI + Docker) |
 | `sudo -u postgres bash scripts/verify-rls-local.sh` | **素の PostgreSQL だけで RLS を検証**(Docker 不要)。マイグレーション適用 + 25シナリオ |
+| CI(`.github/workflows/ci.yml`) | push / PR ごとに自動実行:ビルド + lint + 起動スモークテスト + RLS 25シナリオ |
 
 **スキーマを変更したら必ず RLS 検証を再実行すること。** 成績の権限分離(F-2-6 / NF-5)はこのテストが守っている。
 

@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  app:
+    name: Build / Lint / Smoke test (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    env:
+      # ビルド・スモークテスト用のダミー値(実際の Supabase には接続しない)
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-dummy-key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Smoke test(起動・ルート保護の確認)
+        run: |
+          npx next start -p 3100 &
+          for i in $(seq 1 20); do
+            curl -s -o /dev/null http://localhost:3100/login && break
+            sleep 1
+          done
+          # ログイン画面が描画される
+          curl -fsS http://localhost:3100/login | grep -q "蒼理塾"
+          # 未ログインで保護ページに入れない(/login へリダイレクト)
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/home)" = "307"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/admin)" = "307"
+
+  rls:
+    name: RLS verification (PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+      - name: マイグレーション適用 + RLS 25シナリオ
+        run: bash scripts/verify-rls-local.sh

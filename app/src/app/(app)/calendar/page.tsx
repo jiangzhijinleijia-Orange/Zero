@@ -51,8 +51,8 @@ export default async function CalendarPage({
         >
           ← 前月
         </Link>
-        <p className="text-lg font-bold">
-          {year}{Number(m)}月
+        <p className="text-xl font-bold text-slate-800">
+          <span className="tnum">{year}</span>年 <span className="tnum">{Number(m)}</span>月
         </p>
         <Link
           href={`/calendar?month=${addMonths(month, 1)}`}

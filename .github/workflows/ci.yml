@@ -34,7 +34,7 @@ jobs:
             sleep 1
           done
           # ログイン画面が描画される
-          curl -fsS http://localhost:3100/login | grep -q "蒼理塾"
+          curl -fsS http://localhost:3100/login | grep -q "Ryukyu30"
           # 未ログインで保護ページに入れない(/login へリダイレクト)
           test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/home)" = "307"
           test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/admin)" = "307"

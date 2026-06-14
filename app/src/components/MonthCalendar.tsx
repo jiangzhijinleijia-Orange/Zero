@@ -42,8 +42,8 @@ export function MonthCalendar({
   while (cells.length % 7 !== 0) cells.push(null);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-      <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50 text-center text-xs font-medium text-gray-500">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50 text-center text-xs font-semibold text-slate-500">
         {WEEKDAYS.map((w, i) => (
           <div
             key={w}
@@ -62,19 +62,21 @@ export function MonthCalendar({
           return (
             <div
               key={i}
-              className={`min-h-20 border-b border-r border-gray-100 p-1 align-top [&:nth-child(7n)]:border-r-0 ${
-                date === today ? "bg-indigo-50" : ""
+              className={`min-h-20 border-b border-r border-slate-100 p-1 align-top [&:nth-child(7n)]:border-r-0 ${
+                date === today ? "bg-indigo-50/70" : ""
               }`}
             >
               {day && (
-                <p
-                  className={`mb-1 text-xs ${
-                    date === today
-                      ? "font-bold text-indigo-700"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {day}
+                <p className="mb-1">
+                  <span
+                    className={`tnum inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs ${
+                      date === today
+                        ? "bg-indigo-600 font-bold text-white"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {day}
+                  </span>
                 </p>
               )}
               <div className="space-y-0.5">

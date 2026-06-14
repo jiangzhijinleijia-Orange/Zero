@@ -4,6 +4,7 @@ import { getSessionProfile } from "@/lib/data";
 import { signOut } from "@/lib/actions";
 import { roleLabels } from "@/lib/labels";
 import { AppNav, type NavItem } from "@/components/AppNav";
+import { Brand } from "@/components/Brand";
 import type { UserRole } from "@/lib/database.types";
 
 const navItems: Record<UserRole, NavItem[]> = {
@@ -38,26 +39,26 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-4xl px-4">
           <div className="flex items-center justify-between pt-3">
-            <Link href="/" className="text-lg font-bold tracking-tight text-indigo-900">
-              蒼理塾
+            <Link href="/" className="text-xl">
+              <Brand />
             </Link>
             <div className="flex items-center gap-3">
               <Link
                 href="/settings"
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-slate-900"
               >
                 {profile.display_name}
-                <span className="ml-1 text-xs text-gray-400">
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
                   {roleLabels[profile.role]}
                 </span>
               </Link>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="text-xs text-gray-400 hover:text-gray-600"
+                  className="text-xs text-slate-400 transition hover:text-slate-600"
                 >
                   ログアウト
                 </button>
@@ -68,7 +69,7 @@ export default async function AppLayout({
         </div>
       </header>
       <main className="mx-auto max-w-4xl px-4 py-6">{children}</main>
-      <footer className="mx-auto max-w-4xl px-4 pb-8 text-center text-xs text-gray-400">
+      <footer className="mx-auto max-w-4xl px-4 pb-10 pt-4 text-center text-xs text-slate-400">
         会話は Discord、状態はアプリ。
       </footer>
     </div>

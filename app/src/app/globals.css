@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", Meiryo, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #1b1e34;
+  font-family: var(--font-sans);
+  background-color: #f5f7fc;
+  /* ブルー基調の、ほんのり奥行きのある背景(読みやすさは保つ) */
+  background-image:
+    radial-gradient(60rem 30rem at 110% -5%, #e7ecff 0%, transparent 55%),
+    radial-gradient(48rem 26rem at -10% 0%, #def1ff 0%, transparent 50%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 数字を等幅にして読みやすく(日付・点数・偏差値など) */
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
